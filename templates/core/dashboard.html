@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Maintenix{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div><p class="eyebrow">OVERVIEW</p><h1>Good day, {{ user.first_name|default:user.username }}</h1>
+  <p class="muted">Here is what's happening with maintenance today.</p></div>
+  <a class="btn primary" href="{% url 'report_issue' %}">＋ Report an issue</a>
+</div>
+<div class="stats-grid">
+  <div class="stat-card"><span>Total requests</span><strong>{{ total_count }}</strong></div>
+  <div class="stat-card"><span>Pending</span><strong>{{ pending_count }}</strong></div>
+  <div class="stat-card"><span>Assigned / active</span><strong>{{ active_count }}</strong></div>
+  <div class="stat-card"><span>Resolved</span><strong>{{ resolved_count }}</strong></div>
+</div>
+<div class="section-heading"><h2>Recent requests</h2><a href="{% url 'request_list' %}">View all →</a></div>
+{% include "core/request_table.html" with requests=recent_requests %}
+{% if role == "manager" or role == "admin" %}
+<div class="info-strip"><strong>Manager tools</strong><span>Assign technicians from any request's detail page. Manage users, roles and assets in the admin panel.</span><a href="/admin/">Open admin →</a></div>
+{% endif %}
+{% endblock %}

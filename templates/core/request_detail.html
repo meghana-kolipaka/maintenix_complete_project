@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Request #{{ item.pk }} | Maintenix{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'request_list' %}">← Back to requests</a>
+<div class="detail-card">
+  <div class="detail-top"><div><p class="eyebrow">REQUEST #{{ item.pk }}</p><h1>{{ item.title }}</h1></div>
+    <span class="status {{ item.status }}">{{ item.get_status_display }}</span></div>
+  <p class="muted">Submitted {{ item.created_at|date:"d M Y, h:i A" }}</p>
+  <div class="detail-grid">
+    <div><span>Asset</span><strong>{{ item.asset_name|default:"Not specified" }}</strong></div>
+    <div><span>Location</span><strong>{{ item.location }}</strong></div>
+    <div><span>Priority</span><strong>{{ item.get_priority_display }}</strong></div>
+    <div><span>Reported by</span><strong>{{ item.reported_by.username }}</strong></div>
+    <div><span>Assigned technician</span><strong>{{ item.assigned_to.username|default:"Not assigned" }}</strong></div>
+    <div><span>Last updated</span><strong>{{ item.updated_at|date:"d M Y, h:i A" }}</strong></div>
+  </div>
+  <h3>Problem description</h3><p class="description">{{ item.description }}</p>
+  {% if item.resolution_note %}<h3>Resolution note</h3><p class="description">{{ item.resolution_note }}</p>{% endif %}
+  <div class="actions">
+    {% if user.profile.role == "manager" or user.profile.role == "admin" %}
+      <a class="btn primary" href="{% url 'assign_request' item.pk %}">Assign technician</a>
+    {% endif %}
+    {% if user.profile.role == "technician" or user.profile.role == "manager" or user.profile.role == "admin" %}
+      {% if user.profile.role != "technician" or item.assigned_to_id == user.id %}
+        <a class="btn secondary" href="{% url 'update_request_status' item.pk %}">Update status</a>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} | Maintenix{% endblock %}
+{% block content %}
+<div class="form-card">
+  <a class="back-link" href="{% url 'request_list' %}">← Back to requests</a>
+  <p class="eyebrow">MAINTENIX WORKSPACE</p><h1>{{ page_title }}</h1>
+  {% if object %}<p class="muted">Request #{{ object.pk }} · {{ object.title }}</p>{% endif %}
+  <form method="post">{% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <div class="field">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}<small class="help">{{ field.help_text|safe }}</small>{% endif %}
+        {% for error in field.errors %}<small class="error">{{ error }}</small>{% endfor %}
+      </div>
+    {% endfor %}
+    <button class="btn primary" type="submit">{{ button_text }}</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Login | Maintenix{% endblock %}
+{% block content %}
+<div class="auth-card">
+  <p class="eyebrow">WELCOME BACK</p>
+  <h1>Sign in to Maintenix</h1>
+  <p class="muted">Manage maintenance requests in one place.</p>
+  <form method="post">{% csrf_token %}
+    {{ form.non_field_errors }}
+    <label for="id_username">Username</label>{{ form.username }}
+    <label for="id_password">Password</label>{{ form.password }}
+    <button class="btn primary full" type="submit">Sign in</button>
+  </form>
+  <p class="muted center">New here? <a href="{% url 'register' %}">Create a reporter account</a></p>
+</div>
+{% endblock %}

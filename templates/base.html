@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Maintenix{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{% url 'dashboard' %}">Maintenix<span>.</span></a>
+  {% if user.is_authenticated %}
+  <nav>
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'request_list' %}">Requests</a>
+    <a href="{% url 'report_issue' %}">Report issue</a>
+    {% if user.is_staff %}<a href="/admin/">Admin</a>{% endif %}
+    <form method="post" action="{% url 'logout' %}" class="logout-form">{% csrf_token %}
+      <button class="nav-button" type="submit">Logout</button>
+    </form>
+  </nav>
+  {% endif %}
+</header>
+<main class="container">
+  {% if messages %}
+    {% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+<footer>Maintenix · Maintenance made manageable</footer>
+</body>
+</html>
