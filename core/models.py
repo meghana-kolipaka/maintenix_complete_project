@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from .validators import validate_photo
 
 
 class Profile(models.Model):
@@ -61,6 +62,10 @@ class MaintenanceRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     resolution_note = models.TextField(blank=True)
+    problem_photo = models.ImageField(upload_to="problem_photos/", blank=True, null=True,
+                                      validators=[validate_photo])
+    repair_photo = models.ImageField(upload_to="repair_photos/", blank=True, null=True,
+                                     validators=[validate_photo])
 
     class Meta:
         ordering = ["-created_at"]

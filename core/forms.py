@@ -14,12 +14,13 @@ class RegisterForm(UserCreationForm):
 class MaintenanceRequestForm(forms.ModelForm):
     class Meta:
         model = MaintenanceRequest
-        fields = ("title", "asset", "asset_name", "location", "description", "priority")
+        fields = ("title", "asset", "asset_name", "location", "description", "priority", "problem_photo")
         widgets = {
             "description": forms.Textarea(attrs={"rows": 4}),
             "asset": forms.Select(attrs={"class": "form-control"}),
         }
-        labels = {"asset_name": "Asset name (if not in the asset list)"}
+        labels = {"asset_name": "Asset name (if not in the asset list)",
+                  "problem_photo": "Photo of the problem (optional)"}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -40,8 +41,9 @@ class StatusUpdateForm(forms.ModelForm):
 
     class Meta:
         model = MaintenanceRequest
-        fields = ("status", "resolution_note")
+        fields = ("status", "resolution_note", "repair_photo")
         widgets = {"resolution_note": forms.Textarea(attrs={"rows": 3})}
+        labels = {"repair_photo": "Photo of the repair (optional)"}
 
     def __init__(self, *args, role=None, **kwargs):
         super().__init__(*args, **kwargs)

@@ -18,3 +18,5 @@ h1{font-size:32px;letter-spacing:-1px;margin:4px 0 8px}h2{font-size:20px;margin:
 .message{padding:12px 15px;border-radius:8px;margin-bottom:16px;background:#e2f5e9;color:#176b3c}.message.error{background:#ffe8e8;color:#9f2828}
 footer{text-align:center;color:#94a1aa;font-size:12px;padding:25px;border-top:1px solid var(--line);background:#fff}
 @media(max-width:760px){.topbar{padding:0 16px;height:auto;min-height:68px;flex-wrap:wrap;gap:10px}nav{gap:12px;flex-wrap:wrap;padding-bottom:12px}.container{margin:25px auto;padding:0 15px}.page-heading{align-items:flex-start;flex-direction:column}.stats-grid{grid-template-columns:repeat(2,1fr)}.filter-bar{flex-wrap:wrap}.filter-bar input{min-width:100%}.detail-grid{grid-template-columns:1fr}.info-strip{align-items:flex-start;flex-direction:column}.form-card,.detail-card{padding:20px}}
+
+.photo{max-width:100%;max-height:320px;border-radius:10px;border:1px solid var(--line);margin-top:6px;display:block}

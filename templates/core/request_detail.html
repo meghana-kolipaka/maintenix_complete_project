@@ -15,7 +15,9 @@
     <div><span>Last updated</span><strong>{{ item.updated_at|date:"d M Y, h:i A" }}</strong></div>
   </div>
   <h3>Problem description</h3><p class="description">{{ item.description }}</p>
+  {% if item.problem_photo %}<h3>Problem photo</h3><a href="{{ item.problem_photo.url }}" target="_blank"><img class="photo" src="{{ item.problem_photo.url }}" alt="Photo of the problem"></a>{% endif %}
   {% if item.resolution_note %}<h3>Resolution note</h3><p class="description">{{ item.resolution_note }}</p>{% endif %}
+  {% if item.repair_photo %}<h3>Repair photo</h3><a href="{{ item.repair_photo.url }}" target="_blank"><img class="photo" src="{{ item.repair_photo.url }}" alt="Photo of the repair"></a>{% endif %}
   <div class="actions">
     {% if user.profile.role == "manager" or user.profile.role == "admin" %}
       <a class="btn primary" href="{% url 'assign_request' item.pk %}">Assign technician</a>

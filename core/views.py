@@ -77,7 +77,7 @@ def request_list(request):
 @login_required
 def report_issue(request):
     if request.method == "POST":
-        form = MaintenanceRequestForm(request.POST)
+        form = MaintenanceRequestForm(request.POST, request.FILES)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.reported_by = request.user
@@ -122,7 +122,7 @@ def update_request_status(request, pk):
         messages.error(request, "This request is not assigned to you.")
         return redirect("request_list")
     if request.method == "POST":
-        form = StatusUpdateForm(request.POST, instance=obj, role=request.user.profile.role)
+        form = StatusUpdateForm(request.POST, request.FILES, instance=obj, role=request.user.profile.role)
         if form.is_valid():
             form.save()
             messages.success(request, "Request status updated.")

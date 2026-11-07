@@ -76,3 +76,67 @@ class PermissionTests(TestCase):
                          {"status": "resolved", "resolution_note": "Replaced washer"})
         self.req.refresh_from_db()
         self.assertEqual(self.req.status, "resolved")
+
+
+import io
+import shutil
+import tempfile
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
+from PIL import Image
+
+TEMP_MEDIA = tempfile.mkdtemp()
+
+
+def make_image(name="photo.png", fmt="PNG"):
+    buf = io.BytesIO()
+    Image.new("RGB", (10, 10), "red").save(buf, fmt)
+    return SimpleUploadedFile(name, buf.getvalue(), content_type="image/png")
+
+
+@override_settings(MEDIA_ROOT=TEMP_MEDIA)
+class PhotoTests(TestCase):
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        shutil.rmtree(TEMP_MEDIA, ignore_errors=True)
+
+    def setUp(self):
+        self.reporter = make_user("rep", "reporter")
+        self.tech = make_user("tech", "technician")
+        self.data = {"title": "Fan broken", "location": "Room 101",
+                     "description": "Not rotating", "priority": "high"}
+
+    def test_reporter_can_upload_problem_photo(self):
+        self.client.force_login(self.reporter)
+        self.client.post(reverse("report_issue"), {**self.data, "problem_photo": make_image()})
+        req = MaintenanceRequest.objects.get(title="Fan broken")
+        self.assertTrue(req.problem_photo.name.startswith("problem_photos/"))
+
+    def test_photo_is_optional(self):
+        self.client.force_login(self.reporter)
+        self.client.post(reverse("report_issue"), self.data)
+        self.assertTrue(MaintenanceRequest.objects.filter(title="Fan broken").exists())
+
+    def test_wrong_file_type_rejected(self):
+        self.client.force_login(self.reporter)
+        bad = SimpleUploadedFile("notes.txt", b"hello", content_type="text/plain")
+        self.client.post(reverse("report_issue"), {**self.data, "problem_photo": bad})
+        self.assertFalse(MaintenanceRequest.objects.filter(title="Fan broken").exists())
+
+    def test_oversized_photo_rejected(self):
+        self.client.force_login(self.reporter)
+        big = SimpleUploadedFile("big.png", b"0" * (5 * 1024 * 1024 + 1), content_type="image/png")
+        self.client.post(reverse("report_issue"), {**self.data, "problem_photo": big})
+        self.assertFalse(MaintenanceRequest.objects.filter(title="Fan broken").exists())
+
+    def test_technician_can_upload_repair_photo(self):
+        req = MaintenanceRequest.objects.create(
+            title="Leak", location="A", description="d", reported_by=self.reporter,
+            assigned_to=self.tech, status="assigned")
+        self.client.force_login(self.tech)
+        self.client.post(reverse("update_request_status", args=[req.pk]), {
+            "status": "resolved", "resolution_note": "Fixed", "repair_photo": make_image("fix.png")})
+        req.refresh_from_db()
+        self.assertEqual(req.status, "resolved")
+        self.assertTrue(req.repair_photo.name.startswith("repair_photos/"))
