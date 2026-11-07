@@ -21,9 +21,6 @@ A role-based maintenance request management system built with **Django**. Report
 ### Requests list
 ![Requests list](screenshots/requests-list.png)
 
-### Request detail
-![Request detail](screenshots/request-detail.png)
-
 ### Photo attachments
 ![Photo attachments](screenshots/photo-attachments.png)
 
